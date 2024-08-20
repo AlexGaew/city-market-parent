@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
 import ru.gaew.springcourse.managerapp.controller.payload.NewProductPayload;
 import ru.gaew.springcourse.managerapp.controller.payload.UpdateProductPayload;
 import ru.gaew.springcourse.managerapp.entity.Product;
@@ -14,12 +13,14 @@ import ru.gaew.springcourse.managerapp.myException.BadRequestException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 
 
 @RequiredArgsConstructor
 public class ProductsRestClientImpl implements ProductsRestClient {
+
+
+    private static final String URI_PRODUCT_ID = "/catalogue-api/products/{productId}";
 
 
     private final RestClient restClient;
@@ -59,7 +60,7 @@ public class ProductsRestClientImpl implements ProductsRestClient {
         try {
             return Optional.ofNullable(this.restClient
                     .get()
-                    .uri("/catalogue-api/products/{productId}", productId)
+                    .uri(URI_PRODUCT_ID, productId)
                     .retrieve()
                     .body(Product.class));
         } catch (HttpClientErrorException.NotFound e) {
@@ -71,7 +72,7 @@ public class ProductsRestClientImpl implements ProductsRestClient {
     public void updateProduct(Integer productId, String title, String details) {
         try {
             this.restClient.patch()
-                    .uri("/catalogue-api/products/{productId}", productId)
+                    .uri(URI_PRODUCT_ID, productId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(new UpdateProductPayload(title, details))
                     .retrieve()
@@ -88,7 +89,7 @@ public class ProductsRestClientImpl implements ProductsRestClient {
 
         try {
             this.restClient.delete()
-                    .uri("/catalogue-api/products/{productId}", productId)
+                    .uri(URI_PRODUCT_ID, productId)
                     .retrieve();
         } catch (HttpClientErrorException.NotFound exception) {
             throw new NoSuchElementException("Product not found");

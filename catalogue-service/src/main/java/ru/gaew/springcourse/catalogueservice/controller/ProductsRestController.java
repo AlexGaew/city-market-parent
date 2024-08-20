@@ -17,7 +17,6 @@ import ru.gaew.springcourse.catalogueservice.controller.payload.NewProductPayloa
 import ru.gaew.springcourse.catalogueservice.entity.Product;
 import ru.gaew.springcourse.catalogueservice.service.ProductService;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
