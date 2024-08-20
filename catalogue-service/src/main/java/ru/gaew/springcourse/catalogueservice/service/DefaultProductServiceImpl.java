@@ -1,12 +1,12 @@
-package ru.gaew.springcourse.managerapp.service;
+package ru.gaew.springcourse.catalogueservice.service;
 
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.gaew.springcourse.managerapp.entity.Product;
-import ru.gaew.springcourse.managerapp.repository.ProductRepository;
+import ru.gaew.springcourse.catalogueservice.entity.Product;
+import ru.gaew.springcourse.catalogueservice.repository.ProductRepository;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -18,11 +18,15 @@ public class DefaultProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<Product> findAllProducts() {
+    public Iterable<Product> findAllProducts(String filter) {
+        if (filter != null && !filter.isBlank()) {
+            return this.productRepository.findByTitleLikeIgnoreCase("%" + filter + "%");
+        }
         return this.productRepository.findAll();
     }
 
     @Override
+    @Transactional
     public Product createProduct(String title, String details) {
         return this.productRepository.save(new Product(null, title, details));
     }
@@ -33,6 +37,7 @@ public class DefaultProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void updateProduct(Integer id, String title, String details) {
         this.productRepository.findById(id).ifPresentOrElse(
                 product -> {
@@ -45,8 +50,9 @@ public class DefaultProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(int productId) {
-        this.productRepository.delete(productId);
+        this.productRepository.deleteById(productId);
     }
 
 }

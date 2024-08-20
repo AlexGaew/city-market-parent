@@ -1,0 +1,5 @@
+spring.application.name:  manager-app
+sity-market:
+  services:
+    catalogue:
+      uri: http//localhost:8081

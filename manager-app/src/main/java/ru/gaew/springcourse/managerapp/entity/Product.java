@@ -1,20 +1,11 @@
 package ru.gaew.springcourse.managerapp.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Product {
 
 
-    private Integer id;
 
-    private String title;
+public record Product(Integer id,
 
-    private String details;
+                      String title,
 
+                      String details) {}
 
-}

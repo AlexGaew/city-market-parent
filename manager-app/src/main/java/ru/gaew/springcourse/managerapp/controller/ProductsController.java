@@ -1,18 +1,17 @@
 package ru.gaew.springcourse.managerapp.controller;
 
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.gaew.springcourse.managerapp.client.ProductsRestClient;
 import ru.gaew.springcourse.managerapp.controller.payload.NewProductPayload;
 import ru.gaew.springcourse.managerapp.entity.Product;
-import ru.gaew.springcourse.managerapp.service.ProductService;
+import ru.gaew.springcourse.managerapp.myException.BadRequestException;
 
 import java.util.List;
 
@@ -21,13 +20,14 @@ import java.util.List;
 @RequestMapping("catalogue/products")
 public class ProductsController {
 
-    private final ProductService productService;
+    private final ProductsRestClient productsRestClient;
 
 
     @GetMapping("list")
-    public String getProductsList(Model model) {
-        List<Product> products = this.productService.findAllProducts();
+    public String getProductsList(Model model, @RequestParam(value = "filter", required = false) String filter) {
+        List<Product> products = this.productsRestClient.findAllProducts(filter);
         model.addAttribute("products", products);
+        model.addAttribute("filter", filter);
         return "catalogue/products/productList";
     }
 
@@ -37,21 +37,16 @@ public class ProductsController {
     }
 
     @PostMapping("create")
-    public String createProduct(@Valid NewProductPayload newProductPayload, BindingResult bindingResult, Model model) {
-
-        if (bindingResult.hasErrors()) {
+    public String createProduct(NewProductPayload newProductPayload, Model model) {
+        try {
+            Product product = this.productsRestClient.createProduct(newProductPayload.title(), newProductPayload.details());
+            return "redirect:/catalogue/products/%d".formatted(product.id()); // редирект на страницу описания товара после создания товара
+        } catch (BadRequestException exception) {
             model.addAttribute("payload", newProductPayload);
-            model.addAttribute("errors", bindingResult.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .toList());
+            model.addAttribute("errors", exception.getErrors());
             return "catalogue/products/newProduct";
-
-        } else {
-
-            Product product = this.productService.createProduct(newProductPayload.title(), newProductPayload.details());
-            return "redirect:/catalogue/products/%d".formatted(product.getId()); // редирект на страницу описания товара после создания товара
         }
-    }
 
+    }
 
 }

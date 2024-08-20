@@ -6,23 +6,39 @@
 </head>
 <body>
 <h1>Список товаров в супермаркете</h1>
+<form method="get" data-th-action="@{/catalogue/products/list}">
+    <label>Фильтр <input type="text" name="filter" data-th-value="${filter}">
+        <button type="submit">Поиск</button>
+    </label>
+    <br>
+    <br>
+    <br>
+    <a data-th-href="@{/catalogue/products/list}">К списку товаров</a>
+    <br>
+    <br>
+    <br>
+</form>
+
 <a data-th-href="@{/catalogue/products/create}">&rAarr;Создать товар</a>
+<br>
+<br>
+<br>
 <table>
     <thead>
     <tr>
-        <th>id </th>
+        <th>id</th>
         <th>Товар</th>
     </tr>
     </thead>
-   <tbody>
-   <tr data-th-each="product : ${products}">
-       <td data-th-text="${product.id}"></td>
-       <td>
-           <a data-th-href="@{/catalogue/products/{productId}(productId=${product.id})}"
-              data-th-text="${product.title}"></a>
-       </td>
-   </tr>
-   </tbody>
+    <tbody>
+    <tr data-th-each="product : ${products}">
+        <td data-th-text="${product.id}"></td>
+        <td>
+            <a data-th-href="@{/catalogue/products/{productId}(productId=${product.id})}"
+               data-th-text="${product.title}"></a>
+        </td>
+    </tr>
+    </tbody>
 
 </table>
 
