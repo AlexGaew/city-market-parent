@@ -1,5 +1,11 @@
 
 spring:
+  security:
+    user:
+      password: '{noop}password'
+      name: catalogue_service_user
+      roles:
+        - SERVICE
   datasource:
     url: jdbc:postgresql://localhost:5432/postgre_db
     username: user
@@ -18,3 +24,4 @@ server:
 logging:
   level:
     sql: info
+

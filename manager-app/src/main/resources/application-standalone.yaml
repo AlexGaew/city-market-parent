@@ -1,5 +1,14 @@
 spring.application.name:  manager-app
-sity-market:
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/manager
+    username: manager
+    password: manager
+
+city-market:
   services:
     catalogue:
-      uri: http//localhost:8081
+      uri: http://localhost:8081
+      user: "catalogue_service_user"
+      password: password

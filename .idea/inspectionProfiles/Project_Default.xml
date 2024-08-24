@@ -17,5 +17,6 @@
       </option>
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
+    <inspection_tool class="SqlDialectInspection" enabled="true" level="TYPO" enabled_by_default="true" editorAttributes="TYPO" />
   </profile>
 </component>
