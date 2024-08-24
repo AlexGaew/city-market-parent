@@ -3,6 +3,7 @@ package ru.gaew.springcourse.catalogueservice.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import ru.gaew.springcourse.catalogueservice.controller.payload.NewProductPayloa
 import ru.gaew.springcourse.catalogueservice.entity.Product;
 import ru.gaew.springcourse.catalogueservice.service.ProductService;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -28,7 +30,8 @@ public class ProductsRestController {
 
 
     @GetMapping
-    public Iterable<Product> getProducts(@RequestParam(name = "filter", required = false) String filter) {
+    public Iterable<Product> getProducts(@RequestParam(name = "filter", required = false) String filter, Principal principal) {
+        LoggerFactory.getLogger(ProductsRestController.class).info("Principal {}", principal);
         return this.productService.findAllProducts(filter);
     }
 

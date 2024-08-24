@@ -6,9 +6,25 @@ spring:
     username: manager
     password: manager
 
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8082/realms/citymarket
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: manager-app
+            client-secret: 4bAXV92vNw3ey7bEb4U2nhAw1asrtMNM
+            scope:
+              - openid
+              - edit_catalogue
+              - view_catalogue
+              - microprofile-jwt
+
 city-market:
   services:
     catalogue:
       uri: http://localhost:8081
-      user: "catalogue_service_user"
-      password: password
+      registration-id: keycloak

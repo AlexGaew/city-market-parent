@@ -2,6 +2,7 @@ package ru.gaew.springcourse.managerapp.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,9 @@ import ru.gaew.springcourse.managerapp.controller.payload.NewProductPayload;
 import ru.gaew.springcourse.managerapp.entity.Product;
 import ru.gaew.springcourse.managerapp.myException.BadRequestException;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,7 +27,8 @@ public class ProductsController {
 
 
     @GetMapping("list")
-    public String getProductsList(Model model, @RequestParam(value = "filter", required = false) String filter) {
+    public String getProductsList(Model model, @RequestParam(value = "filter", required = false) String filter
+    ) {
         List<Product> products = this.productsRestClient.findAllProducts(filter);
         model.addAttribute("products", products);
         model.addAttribute("filter", filter);

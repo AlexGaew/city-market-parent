@@ -3,8 +3,10 @@ package ru.gaew.springcourse.catalogueservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -14,13 +16,20 @@ public class BeanSecurityFilterChain {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers("/catalogue-api/**")
-                .hasRole("SERVICE"));
-        http.httpBasic(Customizer.withDefaults());
-
-        http.sessionManagement(sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http    .authorizeHttpRequests(authorizeHttpRequests->authorizeHttpRequests
+                        .requestMatchers(HttpMethod.POST, "/catalogue-api/products")
+                        .hasAnyAuthority("SCOPE_edit_catalogue")
+                        .requestMatchers(HttpMethod.PATCH, "/catalogue-api/products/{productId:\\d}")
+                        .hasAnyAuthority("SCOPE_edit_catalogue")
+                        .requestMatchers(HttpMethod.DELETE, "/catalogue-api/products/{productId:\\d}")
+                        .hasAnyAuthority("SCOPE_edit_catalogue")
+                        .requestMatchers(HttpMethod.GET)
+                        .hasAnyAuthority("SCOPE_view_catalogue")
+                        .anyRequest().denyAll())
+                .csrf(CsrfConfigurer::disable)
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()));
 
         return http.build();
 
